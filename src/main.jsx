@@ -8,7 +8,8 @@ import LoginPage from "./pages/login.jsx";
 import UserPage from "./pages/user/user.jsx";
 import DashboardPage from "./pages/dashboard.jsx";
 import EditUserPage from "./pages/user/editUser.jsx";
-
+import MandatoryModal from "./pages/mandatory/mandatory.jsx";
+import AttendancePage from "./pages/attendance/attendace.jsx";
 
 const router = createBrowserRouter([
   {
@@ -27,7 +28,15 @@ const router = createBrowserRouter([
             path: "edit/:id",
             element: <EditUserPage />,
           },
+          {
+            path: "edit-madatory/:id",
+            element: <MandatoryModal />,
+          },
         ],
+      },
+      {
+        path: "attendance",
+        element: <AttendancePage />,
       },
     ],
   },

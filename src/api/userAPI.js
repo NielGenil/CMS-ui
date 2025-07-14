@@ -34,6 +34,23 @@ export const RegisterUserAPI = async (data) => {
   return await response.json();
 };
 
+export const getCurrentUserAPI = async () => {
+ 
+  const response = await fetch(`${BASE_URL}/api/current-user/`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${getAccessToken()}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch gender data");
+  }
+
+  return await response.json();
+};
+
 export const UserListAPI = async () => {
  
   const response = await fetch(`${BASE_URL}/api/user/`, {

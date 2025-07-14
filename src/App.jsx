@@ -1,11 +1,18 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "./hooks/useAuth";
 import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getCurrentUserAPI, UserListAPI } from "./api/userAPI";
 
 function App() {
   const { isAuthenticated, logout, isTokenValid } = useAuth();
   const navigate = useNavigate();
 
+  const { data } = useQuery({
+    queryKey: ["user-data"],
+    queryFn: getCurrentUserAPI,
+  });
+ 
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/login");
@@ -13,7 +20,6 @@ function App() {
   }, [isAuthenticated, navigate]);
 
   if (!isAuthenticated) {
-    
     return null;
   }
 
@@ -50,6 +56,9 @@ function App() {
           <Link to={"/user"} className="hover:bg-slate-500 p-2 rounded">
             User
           </Link>
+          <Link to={"/attendance"} className="hover:bg-slate-500 p-2 rounded">
+            Attendance
+          </Link>
         </div>
         <div className="p-4">
           <div className="flex flex-col h-[40px] border-t-1 ">
@@ -57,7 +66,7 @@ function App() {
               className="hover:bg-slate-500 p-2 mt-2 rounded"
               onClick={logoutSubmit}
             >
-              Logout
+              Logout {data?.first_name}
             </Link>
           </div>
         </div>

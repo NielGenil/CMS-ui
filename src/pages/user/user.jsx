@@ -1,7 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import EditUserPage from "./editUser";
 import { deleteUserAPI, RegisterUserAPI, UserListAPI } from "../../api/userAPI";
+import MandatoryModal from "../mandatory/mandatory";
 
 export default function UserPage() {
   const registerUserRef = useRef(null);
@@ -11,6 +12,7 @@ export default function UserPage() {
   const [deleteUserId, setDeleteUserId] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [showError, setShowError] = useState(null);
+  const [activeTab, setActiveTab] = useState("edit"); // or 'mandatory'
 
   const { data: userListQuery, isLoading } = useQuery({
     queryKey: ["list-of-user"],
@@ -47,6 +49,7 @@ export default function UserPage() {
 
   const handleEdit = (id) => {
     setSelectedUserId(id);
+    setActiveTab("edit");
     setEditUserModal(true);
   };
 
@@ -183,22 +186,53 @@ export default function UserPage() {
 
       {editUserModal && (
         <div className="absolute w-screen h-screen bg-black/50 top-0 left-0 flex flex-col justify-center items-center z-50">
-          <div className="w-auto bg-white w-[1000px] rounded-md flex flex-col gap-4 relative">
-            <label
-              htmlFor="modal-toggle"
-              className="absolute top-2 right-2 text-gray-500 hover:text-black text-2xl cursor-pointer"
-              onClick={() => setEditUserModal(false)}
+          <div className="w-auto bg-white rounded-md flex flex-col relative max-h-[90vh]">
+            {/* Close Button */}
+            <button
+              className="absolute top-2 right-2 text-gray-500 hover:text-black text-2xl"
+              onClick={() => {setEditUserModal(false); setActiveTab("edit");}}
             >
               &times;
-            </label>
+            </button>
 
-            <div className="overflow-y-auto">
-              {/* Pass selectedUserId to a component that renders user data */}
-              <EditUserPage
-                userId={selectedUserId}
-                userModal={setEditUserModal}
-                editModal={setEditUserModal}
-              />
+            {/* Tab Navigation */}
+            <div className="flex border-b">
+              <button
+                className={`px-4 py-2 font-medium ${
+                  activeTab === "edit"
+                    ? "border-b-2 border-indigo-500 text-indigo-600"
+                    : "text-gray-600"
+                }`}
+                onClick={() => setActiveTab("edit")}
+              >
+                Edit User
+              </button>
+              <button
+                className={`px-4 py-2 font-medium ${
+                  activeTab === "mandatory"
+                    ? "border-b-2 border-indigo-500 text-indigo-600"
+                    : "text-gray-600"
+                }`}
+                onClick={() => setActiveTab("mandatory")}
+              >
+                Mandatory Info
+              </button>
+            </div>
+
+            {/* Tab Content */}
+            <div className="overflow-y-auto p-4 flex-1">
+              {activeTab === "edit" && (
+                <EditUserPage
+                  userId={selectedUserId}
+                />
+              )}
+
+              {activeTab === "mandatory" && (
+                <MandatoryModal
+                  userId={selectedUserId}
+
+                />
+              )}
             </div>
           </div>
         </div>
